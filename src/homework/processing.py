@@ -1,14 +1,13 @@
-from audioop import reverse
-
-
-def filter_by_state(list_of_datas: list, state='EXECUTED') -> list:
+def filter_by_state(list_of_datas: list, state: str = "EXECUTED") -> list:
+    """Ищет в списке данные с определённым статусом"""
     result = []
     for data in list_of_datas:
-        if data['state'] == state:
+        if data["state"] == state:
             result.append(data)
     return result
 
 
-def sort_by_date(list_of_datas: list, param_of_reverse=True) -> list:
-    result = sorted(list_of_datas, key=lambda x: x['date'], reverse=param_of_reverse)
+def sort_by_date(list_of_datas: list, param_of_reverse: bool = True) -> list:
+    """Сортирует данные по дате"""
+    result = sorted(list_of_datas, key=lambda x: x["date"], reverse=param_of_reverse)
     return result
