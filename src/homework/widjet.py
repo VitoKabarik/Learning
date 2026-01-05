@@ -1,10 +1,10 @@
-from string import digits
+from typing import Union
 
 from homework import masks
 
 
-def mask_account_card(type_and_num: str) -> str:
-    """Обрабатывает строку с номером счёта/карты, маскируя его"""
+def mask_account_card(type_and_num: str) -> Union[str, None]:
+    """Обрабатывает строку с номером счёта/карты, маскируя его."""
     if len(type_and_num) < 20:
         raise ValueError("Укажите тип и корректный номер банковского счёта")
     bank_account_number = ""
@@ -27,6 +27,7 @@ def mask_account_card(type_and_num: str) -> str:
 
 
 def check_date_on_correct(day: str, month: str, year: str) -> bool:
+    """Проверяет получаемую дату на корректность."""
     long_months = ("01", "03", "05", "07", "08", "10", "12")
     if month == "02":
         if int(day) == 29:
@@ -48,10 +49,10 @@ def check_date_on_correct(day: str, month: str, year: str) -> bool:
 
 
 def get_date(row_date: str) -> str:
-    """Расшифровывает дату"""
+    """Расшифровывает дату."""
     if len(row_date) < 19:
         raise ValueError("Укажите дату и время проведения операции")
-    if row_date[:4].isdigit() == False or row_date[5:7].isdigit() == False or row_date[8:10].isdigit() == False:
+    if not row_date[:4].isdigit() or not row_date[5:7].isdigit() or not row_date[8:10].isdigit():
         raise TypeError("Дата должна состоять из цифр")
     if int(row_date[:4]) < 1980 or int(row_date[:4]) > 2025:
         raise ValueError("Укажите год проведения операции корректно")
