@@ -20,8 +20,10 @@ def filter_by_currency(list_of_transactions: list, currency: str):
 
 
 
-def transaction_descriptions():
-    yield
+def transaction_descriptions(list_of_transactions: list):
+    for i in range(len(list_of_transactions)):
+        if 'description' in list_of_transactions[i]:
+            yield list_of_transactions[i]['description']
 
 
 def card_number_generator(start: int, stop: int):
@@ -76,7 +78,7 @@ test_list = [
                   "code": "USD"
               }
           },
-          "description": "Перевод организации",
+          "description": "Перевод с карты на карту",
           "from": "Счет 75106830613657916952",
           "to": "Счет 11776614605963066702"
       },
@@ -91,8 +93,12 @@ test_list = [
                       "code": "RUB"
                   }
               },
-              "description": "Перевод со счета на счет",
+              "description": "Перевод со счета на карту",
               "from": "Счет 19708645243227258542",
               "to": "Счет 75651667383060284188"
        }
 ]
+
+tf = transaction_descriptions(test_list)
+for _ in range(len(test_list)):
+    print(next(tf))
