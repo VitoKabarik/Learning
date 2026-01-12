@@ -2,7 +2,7 @@ from sys import exc_info
 
 import pytest
 
-from homework.generators import filter_by_currency, transaction_descriptions
+from homework.generators import filter_by_currency, transaction_descriptions, card_number_generator
 from tests.conftest import list_for_tests
 
 
@@ -158,10 +158,40 @@ def test_transaction_descriptions(list_for_tests):
         }
     ])
     assert next(gen_transaction_descriptions) == "Перевод со счета на счет"
-    assert next(gen_transaction_descriptions) == "Отсутствует описание транзакции"
+    assert next(gen_transaction_descriptions) == "Тип данной транзакции неизвестен"
     assert next(gen_transaction_descriptions) == "Перевод с карты на карту"
 
+@pytest.mark.parametrize('first_num, last_num, expected_list',
+                            [
+                                (6, 1, [
+                                        '0000 0000 0000 0001', '0000 0000 0000 0002',
+                                        '0000 0000 0000 0003', '0000 0000 0000 0004',
+                                        '0000 0000 0000 0005', '0000 0000 0000 0006']
+                                ),
+                                (1234567890123445, 1234567890123457, [
+                                        '1234 5678 9012 3445', '1234 5678 9012 3446',
+                                        '1234 5678 9012 3447', '1234 5678 9012 3448',
+                                        '1234 5678 9012 3449', '1234 5678 9012 3450',
+                                        '1234 5678 9012 3451', '1234 5678 9012 3452',
+                                        '1234 5678 9012 3453', '1234 5678 9012 3454',
+                                        '1234 5678 9012 3455', '1234 5678 9012 3456',
+                                        '1234 5678 9012 3457']
+                                ),
+                                (594967, 594967, ['0000 0000 0059 4967']
+                                )
+                            ]
+                         )
+def test_card_number_generator(first_num, last_num, expected_list):
+    gen_card_number_generator = card_number_generator(first_num, last_num)
+    if last_num < first_num:
+        quan_of_steps = first_num - last_num + 1
+    else:
+        quan_of_steps = last_num - first_num + 1
+    for steps in range(quan_of_steps):
+        assert next(gen_card_number_generator) == expected_list[steps]
+    gen_card_number_generator = card_number_generator(8877776666, 8877776666)
+    assert next(gen_card_number_generator) == '0000 0088 7777 6666'
+    with pytest.raises(StopIteration) as exc_gen_info:
+        next(gen_card_number_generator)
+    assert str(exc_gen_info.value) == "Все возможные номера карт в предложенном интервале уже сгенерированы"
 
-
-def test_card_number_generator():
-    pass
