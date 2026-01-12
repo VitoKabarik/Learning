@@ -2,7 +2,8 @@ from sys import exc_info
 
 import pytest
 
-from homework.generators import filter_by_currency
+from homework.generators import filter_by_currency, transaction_descriptions
+from tests.conftest import list_for_tests
 
 
 def test_filter_by_currency(list_for_tests):
@@ -83,21 +84,83 @@ def test_filter_by_currency(list_for_tests):
             "from": "Visa Platinum 1246377376343588",
             "to": "Счет 14211924144426031657"
         }
-    with pytest.raises(StopIteration) as stop_it_info:
+    with pytest.raises(StopIteration) as exc_gen_info:
         next(gen_filter_by_currency)
-    assert str(stop_it_info.value) == 'Других транзакций с данной валютой нет в списке'
+    assert str(exc_gen_info.value) == "Других транзакций с данной валютой нет в списке"
     gen_filter_by_currency = filter_by_currency(list_for_tests, '')
-    with pytest.raises(StopIteration) as stop_it_info:
+    with pytest.raises(StopIteration) as exc_gen_info:
         next(gen_filter_by_currency)
-    assert str(stop_it_info.value) == 'Транзакций с данной валютой нет в списке'
+    assert str(exc_gen_info.value) == "Транзакций с данной валютой нет в списке"
     gen_filter_by_currency = filter_by_currency([], 'eur')
-    with pytest.raises(StopIteration) as stop_it_info:
+    with pytest.raises(StopIteration) as exc_gen_info:
         next(gen_filter_by_currency)
-    assert str(stop_it_info.value) == 'Транзакций с данной валютой нет в списке'
+    assert str(exc_gen_info.value) == "Транзакций с данной валютой нет в списке"
 
 
-def test_transaction_descriptions():
-    pass
+def test_transaction_descriptions(list_for_tests):
+    gen_transaction_descriptions = transaction_descriptions(list_for_tests)
+    assert next(gen_transaction_descriptions) == "Перевод организации"
+    assert next(gen_transaction_descriptions) == "Перевод со счета на счет"
+    assert next(gen_transaction_descriptions) == "Перевод со счета на счет"
+    assert next(gen_transaction_descriptions) == "Перевод с карты на карту"
+    assert next(gen_transaction_descriptions) == "Перевод организации"
+    with pytest.raises(StopIteration) as exc_gen_info:
+        next(gen_transaction_descriptions)
+    assert str(exc_gen_info.value) == "В списке больше нет транзакций"
+    gen_transaction_descriptions = transaction_descriptions([])
+    with pytest.raises(ValueError) as exc_gen_info:
+        next(gen_transaction_descriptions)
+    assert str(exc_gen_info.value) == "В списке нет ни одной транзакции"
+    gen_transaction_descriptions = transaction_descriptions([
+        {
+            "id": 873106923,
+            "state": "EXECUTED",
+            "date": "2019-03-23T01:09:46.296404",
+            "operationAmount": {
+                "amount": "43318.34",
+                "currency": {
+                    "name": "руб.",
+                    "code": "RUB"
+                }
+            },
+            "description": "Перевод со счета на счет",
+            "from": "Счет 44812258784861134719",
+            "to": "Счет 74489636417521191160"
+        },
+        {
+            "id": 594226727,
+            "state": "CANCELED",
+            "date": "2018-09-12T21:27:25.241689",
+            "operationAmount": {
+                "amount": "67314.70",
+                "currency": {
+                    "name": "руб.",
+                    "code": "RUB"
+                }
+            },
+            "from": "Visa Platinum 1246377376343588",
+            "to": "Счет 14211924144426031657"
+        },
+        {
+            "id": 895315941,
+            "state": "EXECUTED",
+            "date": "2018-08-19T04:27:37.904916",
+            "operationAmount": {
+                "amount": "56883.54",
+                "currency": {
+                    "name": "USD",
+                    "code": "USD"
+                }
+            },
+            "description": "Перевод с карты на карту",
+            "from": "Visa Classic 6831982476737658",
+            "to": "Visa Platinum 8990922113665229"
+        }
+    ])
+    assert next(gen_transaction_descriptions) == "Перевод со счета на счет"
+    assert next(gen_transaction_descriptions) == "Отсутствует описание транзакции"
+    assert next(gen_transaction_descriptions) == "Перевод с карты на карту"
+
 
 
 def test_card_number_generator():
