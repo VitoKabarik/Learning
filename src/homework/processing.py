@@ -5,7 +5,7 @@ def filter_by_state(list_of_operations: list, state: str = "EXECUTED") -> list:
     result = []
     for data in list_of_operations:
         if 'state' not in data:
-            raise KeyError("Отсутствует информация о статусе транзакции")
+            raise KeyError("Отсутствует информация о состоянии транзакции")
         if data['state'] == state:
             result.append(data)
     return result

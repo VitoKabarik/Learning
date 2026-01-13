@@ -1,6 +1,6 @@
 from typing import Any
 
-from masks import get_mask_account, get_mask_card_number
+from homework.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(type_and_num: str) -> Any:

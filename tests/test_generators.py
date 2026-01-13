@@ -52,15 +52,15 @@ def test_filter_by_currency(list_for_tests: list) -> None:
         "from": "Visa Platinum 1246377376343588",
         "to": "Счет 14211924144426031657",
     }
-    with pytest.raises(StopIteration) as exc_gen_info:
+    with pytest.raises(RuntimeError) as exc_gen_info:
         next(gen_filter_by_currency)
     assert str(exc_gen_info.value) == "Других транзакций с данной валютой нет в списке"
     gen_filter_by_currency = filter_by_currency(list_for_tests, "")
-    with pytest.raises(StopIteration) as exc_gen_info:
+    with pytest.raises(RuntimeError) as exc_gen_info:
         next(gen_filter_by_currency)
     assert str(exc_gen_info.value) == "Транзакций с данной валютой нет в списке"
     gen_filter_by_currency = filter_by_currency([], "eur")
-    with pytest.raises(StopIteration) as exc_gen_info:
+    with pytest.raises(RuntimeError) as exc_gen_info:
         next(gen_filter_by_currency)
     assert str(exc_gen_info.value) == "Транзакций с данной валютой нет в списке"
 
@@ -73,7 +73,7 @@ def test_transaction_descriptions(list_for_tests: list) -> None:
     assert next(gen_transaction_descriptions) == "Перевод со счета на счет"
     assert next(gen_transaction_descriptions) == "Перевод с карты на карту"
     assert next(gen_transaction_descriptions) == "Перевод организации"
-    with pytest.raises(StopIteration) as exc_gen_info:
+    with pytest.raises(RuntimeError) as exc_gen_info:
         next(gen_transaction_descriptions)
     assert str(exc_gen_info.value) == "В списке больше нет транзакций"
     gen_transaction_descriptions = transaction_descriptions([])
@@ -163,6 +163,6 @@ def test_card_number_generator(first_num: int, last_num: int, expected_list: lis
         assert next(gen_card_number_generator) == expected_list[steps]
     gen_card_number_generator = card_number_generator(8877776666, 8877776666)
     assert next(gen_card_number_generator) == "0000 0088 7777 6666"
-    with pytest.raises(StopIteration) as exc_gen_info:
+    with pytest.raises(RuntimeError) as exc_gen_info:
         next(gen_card_number_generator)
     assert str(exc_gen_info.value) == "Все возможные номера карт в указанном интервале уже сгенерированы"
