@@ -1,24 +1,21 @@
+from collections.abc import Iterator
 
 
-def filter_by_currency(list_of_transactions: list, currency: str):
+def filter_by_currency(list_of_transactions: list, currency: str) -> Iterator:
+    """Выдаёт по запросу транзакции с указанной валютой."""
     suitable_transactions = []
-    currency = currency.upper()
     for i in range(len(list_of_transactions)):
-        for details_of_transactions in list_of_transactions[i].keys():
-            if type(list_of_transactions[i][details_of_transactions]) == dict:
-                temp_cell = list_of_transactions[i][details_of_transactions]
-                if 'currency' in temp_cell:
-                    if type(temp_cell['currency']) == dict and 'code' in temp_cell['currency']:
-                        if temp_cell['currency']['code'] == currency:
-                            suitable_transactions.append(list_of_transactions[i])
-                            yield list_of_transactions[i]
+        if list_of_transactions[i].get('operationAmount').get('currency').get('code') == currency.upper():
+            suitable_transactions.append(list_of_transactions[i])
+            yield list_of_transactions[i]
     if not suitable_transactions:
-        return "Транзакций с данной валютой нет в списке"
+        raise StopIteration("Транзакций с данной валютой нет в списке")
     else:
-        return "Других транзакций с данной валютой нет в списке"
+        raise StopIteration("Других транзакций с данной валютой нет в списке")
 
 
-def transaction_descriptions(list_of_transactions: list):
+def transaction_descriptions(list_of_transactions: list) -> Iterator:
+    """Описывает по запросу тип транзакций в предложенном списке."""
     if not list_of_transactions:
         raise ValueError("В списке нет ни одной транзакции")
     else:
@@ -27,10 +24,11 @@ def transaction_descriptions(list_of_transactions: list):
                 yield list_of_transactions[i]['description']
             else:
                 yield "Тип данной транзакции неизвестен"
-        return "В списке больше нет транзакций"
+        raise StopIteration("В списке больше нет транзакций")
 
 
-def card_number_generator(start: int, stop: int):
+def card_number_generator(start: int, stop: int) -> Iterator:
+    """Генерирует номера карт в указанном интервале."""
     if stop < start:
         o = start
         start = stop
@@ -39,4 +37,4 @@ def card_number_generator(start: int, stop: int):
         card_number = '0' * (16 - len(str(start))) + str(start)
         yield f'{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:16]}'
         start += 1
-    return "Все возможные номера карт в предложенном интервале уже сгенерированы"
+    raise StopIteration("Все возможные номера карт в указанном интервале уже сгенерированы")

@@ -24,7 +24,7 @@ def test_mask_account_card_with_empty_str() -> None:
     """Тестирует функцию, маскирующую номер счёта или карты, на работу со вводом пустой строки."""
     with pytest.raises(ValueError) as exc_info_empty:
         mask_account_card("")
-    assert str(exc_info_empty.value) == "Укажите тип и корректный номер банковского счёта"
+    assert str(exc_info_empty.value) == "Укажите вид и корректный номер банковского счёта"
 
 
 def test_mask_account_card_with_invalid_symbols() -> None:
