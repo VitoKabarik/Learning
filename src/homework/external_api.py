@@ -1,5 +1,6 @@
 import os
 import json
+
 import requests
 from dotenv import load_dotenv
 
@@ -12,8 +13,16 @@ headers= {
 
 
 def return_of_amount(transaction: dict) -> float:
-    from_cur = transaction.get('operationAmount').get('currency').get('code')
-    amount = transaction.get('operationAmount').get('amount')
+    from_cur = transaction.get('operationAmount', {}).get('currency', {}).get('code')
+    amount = transaction.get('operationAmount', {}).get('amount')
+    if not amount:
+        raise AttributeError('Сумма транзакции неизвестна')
+    if not from_cur:
+        raise AttributeError('Валюта транзакции неизвестна')
+    try:
+        amount = float(amount)
+    except ValueError:
+        raise ValueError('Некорректная сумма транзакции')
     if from_cur == 'USD' or from_cur == 'EUR':
         url = "https://api.apilayer.com/exchangerates_data/convert"
         payload = {"amount": amount, "from": from_cur, "to": "RUB"}
@@ -25,19 +34,3 @@ def return_of_amount(transaction: dict) -> float:
         else:
             raise Exception(response.reason)
     return amount
-
-print(return_of_amount({
-    "id": 41428829,
-    "state": "EXECUTED",
-    "date": "2019-07-03T18:35:29.512364",
-    "operationAmount": {
-      "amount": "8221.37",
-      "currency": {
-        "name": "USD",
-        "code": "USD"
-      }
-    },
-    "description": "Перевод организации",
-    "from": "MasterCard 7158300734726758",
-    "to": "Счет 35383033474447895560"
-  }))
