@@ -20,6 +20,7 @@ def mask_account_card(type_and_num: str) -> Any:
                     return type_and_num[:i] + get_mask_account(type_and_num[i:])
                 else:
                     return type_and_num[:i] + get_mask_card_number(type_and_num[i:])
+    raise ValueError("Отсутствует номер банковского счёта")
 
 
 def check_date_on_correct(day: str, month: str, year: str) -> bool:
