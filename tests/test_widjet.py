@@ -1,22 +1,29 @@
 import pytest
-from src.homework.widjet import get_date, mask_account_card
+
+from homework.widjet import get_date, mask_account_card
 
 
-@pytest.mark.parametrize("bank_datas, exp_output", [
-    ('Счет 44238164562083919420', 'Счет **9420'),
-    ('Visa Gold 7756673469642839', 'Visa Gold 7756 67** **** 2839'),
-    ('Мир 1582   4744 75 54 7 3 0 1', 'Мир 1582 47** **** 7301'),
-])
+@pytest.mark.parametrize(
+    "bank_datas, exp_output",
+    [
+        ("Счет 44238164562083919420", "Счет **9420"),
+        ("Visa Gold 7756673469642839", "Visa Gold 7756 67** **** 2839"),
+        ("Мир 1582   4744 75 54 7 3 0 1", "Мир 1582 47** **** 7301"),
+    ],
+)
 def test_mask_account_card(bank_datas: str, exp_output: str) -> None:
     """Тестирует функцию, возвращающую строку с замаскированными данными."""
     assert mask_account_card(bank_datas) == exp_output
 
 
-@pytest.mark.parametrize("bank_datas, exp_err_msg", [
-    ("", "Некорректный банковский счёт"),
-    ('Visa Plotina 7756673469642839', "Некорректная платёжная система"),
-    ('Мир без цифр: очередной бестселлер', "Отсутствует номер банковского счёта")
-])
+@pytest.mark.parametrize(
+    "bank_datas, exp_err_msg",
+    [
+        ("", "Некорректный банковский счёт"),
+        ("Visa Plotina 7756673469642839", "Некорректная платёжная система"),
+        ("Мир без цифр: очередной бестселлер", "Отсутствует номер банковского счёта"),
+    ],
+)
 def test_mask_account_card_with_invalid_datas(bank_datas: str, exp_err_msg: str) -> None:
     """Тестирует функцию, возвращающую строку с замаскированными данными, на обработку некорректных данных."""
     with pytest.raises(ValueError) as data_err_info:

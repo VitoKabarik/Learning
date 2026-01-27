@@ -1,11 +1,9 @@
 import json
 from typing import Any
-import logging
-import os
+
 from homework.logger import setup_logging
 
-
-utils_logger = setup_logging('utils', 'utils.log')
+utils_logger = setup_logging("utils", "utils.log")
 
 
 def show_transactions(path_to_json: str) -> Any:
