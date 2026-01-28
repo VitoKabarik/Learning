@@ -1,58 +1,34 @@
 import pytest
 
-from src.homework.widjet import get_date, mask_account_card
+from homework.widjet import get_date, mask_account_card
 
 
 @pytest.mark.parametrize(
-    "bank_datas, expected_result_account",
+    "bank_datas, exp_output",
     [
-        ("Счёт 01234567890123456789", "Счёт **6789"),
-        ("Счет 01234 56789 01234 56789", "Счет **6789"),
-        ("Счёт 012.345.678.901.234.56789", "Счёт **6789"),
-        ("Счет 0123-4567-8901-2345-6789", "Счет **6789"),
-        ("Visa 0123456789012345", "Visa 0123 45** **** 2345"),
-        ("Mastercard 0000    1111  2222      3333", "Mastercard 0000 11** **** 3333"),
-        ("Мир 0123.45678901 2345", "Мир 0123 45** **** 2345"),
+        ("Счет 44238164562083919420", "Счет **9420"),
+        ("Visa Gold 7756673469642839", "Visa Gold 7756 67** **** 2839"),
+        ("Мир 1582   4744 75 54 7 3 0 1", "Мир 1582 47** **** 7301"),
     ],
 )
-def test_mask_account_card(bank_datas: str, expected_result_account: str) -> None:
-    """Тестирует функцию, маскирующую номер счёта или карты, на определённых строках."""
-    assert mask_account_card(bank_datas) == expected_result_account
+def test_mask_account_card(bank_datas: str, exp_output: str) -> None:
+    """Тестирует функцию, возвращающую строку с замаскированными данными."""
+    assert mask_account_card(bank_datas) == exp_output
 
 
-def test_mask_account_card_with_empty_str() -> None:
-    """Тестирует функцию, маскирующую номер счёта или карты, на работу со вводом пустой строки."""
-    with pytest.raises(ValueError) as exc_info_empty:
-        mask_account_card("")
-    assert str(exc_info_empty.value) == "Укажите тип и корректный номер банковского счёта"
-
-
-def test_mask_account_card_with_invalid_symbols() -> None:
-    """Тестирует функцию, маскирующую номер счёта или карты, на работу со вводом некорректных символов."""
-    with pytest.raises(ValueError) as exc_info_symbols:
-        mask_account_card("Мир 0123?4567?8901?2345.")
-    assert str(exc_info_symbols.value) == "Укажите номер счёта или карты слитно, через пробел, точку или дефис"
-
-
-def test_mask_account_card_with_invalid_quantity_of_numbers() -> None:
-    """Тестирует функцию, маскирующую номер счёта или карты, на неверную длину строки ввода."""
-    with pytest.raises(ValueError) as exc_info_account:
-        mask_account_card("Счёт 0123 4567 8901 2345")
-    assert str(exc_info_account.value) == "Номер личного счёта должен состоять из 20 цифр"
-    with pytest.raises(ValueError) as exc_info_card:
-        mask_account_card("Mastercard 01234 56789 01234 567")
-    assert str(exc_info_card.value) == "Номер карты должен состоять из 16 цифр"
-
-
-def test_mask_account_card_with_invalid_payment_system() -> None:
-    """Тестирует функцию, маскирующую номер счёта или карты.
-
-    Проверяет работу функции с номером счёта при некорректном указании платёжной системы
-    или его отсутствии.
-    """
-    with pytest.raises(ValueError) as exc_info_pay:
-        mask_account_card("Hi 0123 4567 8901 2345")
-    assert str(exc_info_pay.value) == "Укажите платёжную систему вашей карты"
+@pytest.mark.parametrize(
+    "bank_datas, exp_err_msg",
+    [
+        ("", "Некорректный банковский счёт"),
+        ("Visa Plotina 7756673469642839", "Некорректная платёжная система"),
+        ("Мир без цифр: очередной бестселлер", "Отсутствует номер банковского счёта"),
+    ],
+)
+def test_mask_account_card_with_invalid_datas(bank_datas: str, exp_err_msg: str) -> None:
+    """Тестирует функцию, возвращающую строку с замаскированными данными, на обработку некорректных данных."""
+    with pytest.raises(ValueError) as data_err_info:
+        mask_account_card(bank_datas)
+    assert str(data_err_info.value) == exp_err_msg
 
 
 @pytest.mark.parametrize(

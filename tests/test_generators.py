@@ -53,11 +53,11 @@ def test_filter_by_currency(list_for_tests: list) -> None:
         "to": "Счет 14211924144426031657",
     }
     gen_filter_by_currency = filter_by_currency(list_for_tests, "")
-    with pytest.raises(StopIteration) as exc_gen_info:
+    with pytest.raises(ValueError) as exc_gen_info:
         next(gen_filter_by_currency)
     assert str(exc_gen_info.value) == "Транзакций с данной валютой нет в списке"
     gen_filter_by_currency = filter_by_currency([], "eur")
-    with pytest.raises(StopIteration) as exc_gen_info:
+    with pytest.raises(ValueError) as exc_gen_info:
         next(gen_filter_by_currency)
     assert str(exc_gen_info.value) == "Транзакций с данной валютой нет в списке"
 

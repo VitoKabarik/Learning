@@ -4,7 +4,7 @@ from functools import wraps
 from typing import Any
 
 
-def log(filename: str="") -> Callable:
+def log(filename: str = "") -> Callable:
     """Декоратор, отслеживающий работу функции."""
 
     def decorator(function: Callable) -> Callable:

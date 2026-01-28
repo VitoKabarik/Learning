@@ -57,3 +57,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+addopts = "--cov=src --cov-report=html --cov-report=xml:coverage.xml"

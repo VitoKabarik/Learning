@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 
-from src.homework.utils import show_transactions
+from homework.utils import show_transactions
 
 tst_data = {
     "id": 41428829,

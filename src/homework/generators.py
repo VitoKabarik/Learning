@@ -9,7 +9,7 @@ def filter_by_currency(list_of_transactions: list, currency: str) -> Iterator:
             suitable_transactions.append(list_of_transactions[i])
             yield list_of_transactions[i]
     if not suitable_transactions:
-        return "Транзакций с данной валютой нет в списке"
+        raise ValueError("Транзакций с данной валютой нет в списке")
 
 
 def transaction_descriptions(list_of_transactions: list) -> Iterator:
