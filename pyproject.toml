@@ -3,13 +3,15 @@ name = "homework"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Your Name", email = "you@example.com"}
+    {name = "Vitaly", email = "iphone59perm@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "requests (>=2.32.5,<3.0.0)",
-    "python-dotenv (>=1.2.1,<2.0.0)"
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "pandas (>=3.0.0,<4.0.0)",
+    "openpyxl (>=3.1.5,<4.0.0)"
 ]
 
 [tool.poetry]
@@ -57,4 +59,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-addopts = "--cov=src --cov-report=html --cov-report=xml:coverage.xml"
+addopts = "--cov=homework --cov-report=html --cov-report=xml:coverage.xml --cov-report=term-missing"
